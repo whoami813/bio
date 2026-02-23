@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wai Lam NG | Cybersecurity Specialist</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #000;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden; /* Prevent body scroll, handle scroll in terminal */
+        }
+
+        /* Matrix Background */
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            opacity: 0.25; /* Keep it subtle so text is readable */
+        }
+
+        /* Terminal Overlay */
+        #terminal-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.6); /* Dark tint for readability */
+        }
+
+        #terminal {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-bottom: 50px;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        .output-line {
+            margin: 5px 0;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .cmd-echo {
+            color: #fff;
+            margin-top: 15px;
+        }
+
+        .highlight {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        #prompt {
+            color: #0f0;
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            flex-grow: 1;
+            outline: none;
+            text-shadow: 0 0 5px #0f0;
+        }
+
+        /* Ascii Art */
+        .ascii-art {
+            white-space: pre;
+            font-size: 12px;
+            line-height: 12px;
+            margin-bottom: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Scanline effect */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-bg"></canvas>
+    <div class="scanlines"></div>
+
+    <div id="terminal-wrapper">
+        <div id="terminal">
+            <div id="output"></div>
+            <div id="input-container" style="display: none;">
+                <span id="prompt">guest@wailam-ng:~$</span>
+                <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- MATRIX RAIN BACKGROUND ---
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+
+        for(let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 30);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // --- TERMINAL LOGIC ---
+        const outputDiv = document.getElementById('output');
+        const inputContainer = document.getElementById('input-container');
+        const cmdInput = document.getElementById('cmd-input');
+        const wrapper = document.getElementById('terminal-wrapper');
+
+        const profileData = {
+            whoami: `
+NAME:        Wai Lam, NG (William)
+ROLE:        Cybersecurity Specialist
+LOCATION:    Adelaide, Australia
+MISSION:     Championing "adequate security" for business resilience.
+BIO:         Experienced ICT security architect specialising in network 
+             security, cloud computing, and threat hunting.
+
+Type '<span class="highlight">skills</span>', '<span class="highlight">experience</span>', or '<span class="highlight">projects</span>' to dig deeper.`,
+
+            skills: `
+[SYSTEM SCAN: SKILLS INVENTORY]
+
+<span class="highlight">> Network Security:</span>         Firewall management, architecture review
+<span class="highlight">> Azure Cloud Computing:</span>    Managing Azure networking components
+<span class="highlight">> Threat Hunting:</span>           SIEM (Splunk, Azure KQL), PCAP analysis
+<span class="highlight">> Microsoft Security:</span>       Microsoft Defender, Incident Response, Intune
+<span class="highlight">> Risk Assessments:</span>         Trending cyber threat landscape analysis
+<span class="highlight">> 3rd Party Risk:</span>           Ensure appropriate controls & due diligence
+<span class="highlight">> Vulnerability Management:</span> VA scans, prioritising patches by severity
+<span class="highlight">> ICT Continuity:</span>           Reinforcing continuity, Business Impact Analysis`,
+
+            experience: `
+[WORK HISTORY LOG]
+
+<span class="highlight">[+] SA POLICE (SOUTH AUSTRALIA)</span>
+    Role: Technical Security Specialist
+    Time: Oct 2024 - Present
+
+<span class="highlight">[+] ISD CYBER (SOUTH AUSTRALIA)</span>
+    Role: Senior Technical Security Consultant 
+    Time: Nov 2021 – Oct 2024
+    --
+    Role: Technical Security Consultant
+    Time: Aug 2019 – Nov 2021
+
+<span class="highlight">[+] NETCRAFT (MACAU)</span>
+    Role: Multiple roles in infrastructure engineering
+    Time: Feb 2014 - Feb 2017`,
+
+            education: `
+[EDUCATION & CERTIFICATIONS DECRYPTED]
+
+<span class="highlight">DEGREES:</span>
+* Master of Cybersecurity, University of South Australia (2019)
+* Bachelor of Commerce, University of Adelaide (2012)
+
+<span class="highlight">KEY CERTIFICATIONS:</span>
+* Microsoft Certified: Security Operations Analyst Associate
+* Azure Fundamentals
+* Certificate of the Business Continuity Institute (CBCI)
+* H3C Certified Senior Engineer for Routing & Switching (relevant to CCNP)
+* CCNA Routing and Switching
+* VMware Certified Professional 5 (VCP5)`,
+
+            projects: `
+[PROJECT FILES EXTRACTED]
+
+<span class="highlight">> Compliance Alignment:</span> 
+  Maturity assessments against Essential Eight, NIST CSF, AESCSF, ISO 27002.
+  
+<span class="highlight">> Cyber Incident Response:</span> 
+  Utilised SOAR and SIEM platforms for security incident reviews.
+
+<span class="highlight">> Security Hardening & SOE Baseline:</span> 
+  Implemented scalable security controls for secure operating environments.
+
+<span class="highlight">> International Projects:</span> 
+  Key member of cyber security programs in large oil & gas corporations 
+  and government departments in Australia. 
+  Extensive IT infrastructure projects across Macau and China 
+  (casino hotels, aviation networks, government departments).`,
+
+            contact: `
+[ESTABLISHING SECURE CONNECTION...]
+
+Phone: <span class="highlight">0426 097 288</span>
+Email: <span class="highlight">wailam.ng.william@gmail.com</span>
+
+Ready to strengthen your security posture. Awaiting your transmission.`
+        };
+
+        const bootSequence = [
+            "INITIALISING SECURE KERNEL...",
+            "LOADING MODULES: [NETWORK, AZURE, SIEM, FIREWALL]... OK",
+            "ESTABLISHING UPLINK TO WAI LAM NG SECURE DB... CONNECTED",
+            "DECRYPTING PROFILE DATA...",
+            " ",
+            "SYSTEM READY.",
+            `Type '<span class="highlight">help</span>' for a list of available commands.`
+        ];
+
+        const asciiArt = `
+ __      __      .__ .____                     _______    ________   
+/  \\    /  \\____ |__||    |   _____    _____   \\      \\  /  _____/   
+\\   \\/\\/   /\\__  \\|  ||    |   \\__  \\  /     \\  /   |   \\/   \\  ___  
+ \\        /  / __ \\  ||    |___ / __ \\|  Y Y  \\/    |    \\    \\_\\  \\ 
+  \\__/\\  /  (____  /__||_______(____  /__|_|  /\\____|__  /\\______  / 
+       \\/        \\/                 \\/      \\/         \\/        \\/  
+                                         CYBERSECURITY SPECIALIST
+        `;
+
+        // Boot sequence logic
+        let bootIndex = 0;
+        function printBootSequence() {
+            if (bootIndex === 0) {
+                printLine(`<div class="ascii-art highlight">${asciiArt}</div>`);
+            }
+
+            if (bootIndex < bootSequence.length) {
+                printLine(bootSequence[bootIndex]);
+                bootIndex++;
+                setTimeout(printBootSequence, 300); // 300ms delay between lines
+            } else {
+                inputContainer.style.display = 'flex';
+                cmdInput.focus();
+                scrollToBottom();
+            }
+        }
+
+        // Print line to terminal
+        function printLine(text, isCmd = false) {
+            const line = document.createElement('div');
+            line.className = 'output-line' + (isCmd ? ' cmd-echo' : '');
+            line.innerHTML = text;
+            outputDiv.appendChild(line);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            wrapper.scrollTop = wrapper.scrollHeight;
+        }
+
+        // Handle commands
+        function processCommand(cmd) {
+            const cleanCmd = cmd.trim().toLowerCase();
+            printLine(`guest@wailam-ng:~$ ${cmd}`, true);
+
+            if (cleanCmd === '') return;
+
+            switch(cleanCmd) {
+                case 'help':
+                    printLine(`
+AVAILABLE COMMANDS:
+  <span class="highlight">whoami</span>     - Display executive summary
+  <span class="highlight">skills</span>     - View technical capabilities
+  <span class="highlight">experience</span> - Show employment history
+  <span class="highlight">education</span>  - List degrees and certifications
+  <span class="highlight">projects</span>   - Display key project highlights
+  <span class="highlight">contact</span>    - Get contact details
+  <span class="highlight">clear</span>      - Clear terminal screen
+  <span class="highlight">sudo</span>       - ???`);
+                    break;
+                case 'whoami':
+                    printLine(profileData.whoami);
+                    break;
+                case 'skills':
+                    printLine(profileData.skills);
+                    break;
+                case 'experience':
+                    printLine(profileData.experience);
+                    break;
+                case 'education':
+                    printLine(profileData.education);
+                    break;
+                case 'projects':
+                    printLine(profileData.projects);
+                    break;
+                case 'contact':
+                    printLine(profileData.contact);
+                    break;
+                case 'clear':
+                    outputDiv.innerHTML = '';
+                    break;
+                case 'sudo':
+                    printLine("Nice try. This incident will be reported.");
+                    break;
+                default:
+                    printLine(`Command not found: ${cleanCmd}. Type 'help' for available commands.`);
+            }
+        }
+
+        // Event listener for input
+        cmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value;
+                this.value = '';
+                processCommand(cmd);
+            }
+        });
+
+        // Always focus input when clicking anywhere on the terminal
+        wrapper.addEventListener('click', () => {
+            cmdInput.focus();
+        });
+
+        // Start boot sequence
+        window.onload = () => {
+            setTimeout(printBootSequence, 500);
+        };
+    </script>
+</body>
+</html>
