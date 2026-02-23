@@ -5,228 +5,305 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wai Lam NG | Cybersecurity Specialist</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
+        
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden; /* Prevent body scroll, handle scroll in terminal */
+            background-color: #0d1117; /* Deep modern dark slate */
+            color: #c9d1d9; /* Soft grey text */
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            overflow: hidden;
         }
 
-        /* Matrix Background */
+        /* Particle Network Background */
         canvas {
             display: block;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 0;
-            opacity: 0.25; /* Keep it subtle so text is readable */
+            opacity: 0.6;
         }
 
-        /* Terminal Overlay */
+        /* Terminal Overlay with Modern Glassmorphism */
         #terminal-wrapper {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
             z-index: 1;
-            padding: 20px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.6); /* Dark tint for readability */
+            background: rgba(13, 17, 23, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        #terminal {
-            max-width: 900px;
-            margin: 0 auto;
-            padding-bottom: 50px;
-            text-shadow: 0 0 5px #0f0;
+        /* macOS style window header */
+        #terminal-header {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .mac-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .close-btn { background: #ff5f56; box-shadow: 0 0 5px #ff5f5680; }
+        .min-btn { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e80; }
+        .max-btn { background: #27c93f; box-shadow: 0 0 5px #27c93f80; }
+
+        .window-title {
+            flex-grow: 1;
+            text-align: center;
+            color: #8b949e;
+            font-size: 13px;
+            user-select: none;
+            margin-right: 56px; /* Balance the buttons for true center */
+        }
+
+        #terminal-scroll-area {
+            padding: 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+            scrollbar-width: thin;
+            scrollbar-color: #30363d transparent;
+        }
+        
+        #terminal-scroll-area::-webkit-scrollbar { width: 8px; }
+        #terminal-scroll-area::-webkit-scrollbar-thumb { background-color: #30363d; border-radius: 4px; }
 
         .output-line {
-            margin: 5px 0;
-            line-height: 1.5;
+            margin: 6px 0;
+            line-height: 1.6;
             word-wrap: break-word;
             white-space: pre-wrap;
         }
 
         .cmd-echo {
             color: #fff;
-            margin-top: 15px;
+            margin-top: 20px;
+            opacity: 0.8;
         }
 
-        .highlight {
-            color: #fff;
-            font-weight: bold;
-        }
+        /* Modern syntax highlighting classes */
+        .hl-cyan { color: #79c0ff; font-weight: 500; }
+        .hl-green { color: #7ee787; font-weight: 500; }
+        .hl-purple { color: #d2a8ff; font-weight: 500; }
+        .hl-orange { color: #ffa657; font-weight: 500; }
 
         #input-container {
             display: flex;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 15px;
+            padding-bottom: 20px;
         }
 
         #prompt {
-            color: #0f0;
-            margin-right: 10px;
+            margin-right: 12px;
             white-space: nowrap;
+            font-weight: 500;
         }
+        
+        .prompt-user { color: #ff7b72; }
+        .prompt-at { color: #c9d1d9; }
+        .prompt-host { color: #d2a8ff; }
+        .prompt-symbol { color: #7ee787; }
 
         #cmd-input {
             background: transparent;
             border: none;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
+            color: #c9d1d9;
+            font-family: 'Fira Code', monospace;
+            font-size: 15px;
             flex-grow: 1;
             outline: none;
-            text-shadow: 0 0 5px #0f0;
         }
 
-        /* Ascii Art */
         .ascii-art {
             white-space: pre;
-            font-size: 12px;
+            font-size: 10px;
             line-height: 12px;
-            margin-bottom: 20px;
-            overflow-x: hidden;
+            margin-bottom: 24px;
+            color: #58a6ff;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+            overflow: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-
-        /* Scanline effect */
-        .scanlines {
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.2) 50%,
-                rgba(0,0,0,0.2)
-            );
-            background-size: 100% 4px;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 10;
-            pointer-events: none;
+        
+        .ascii-art::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <canvas id="matrix-bg"></canvas>
-    <div class="scanlines"></div>
+    <canvas id="network-bg"></canvas>
 
     <div id="terminal-wrapper">
-        <div id="terminal">
+        <div id="terminal-header">
+            <div class="mac-btn close-btn"></div>
+            <div class="mac-btn min-btn"></div>
+            <div class="mac-btn max-btn"></div>
+            <div class="window-title">william@ng-cyber-sec: ~</div>
+        </div>
+        <div id="terminal-scroll-area">
             <div id="output"></div>
             <div id="input-container" style="display: none;">
-                <span id="prompt">guest@wailam-ng:~$</span>
+                <span id="prompt">
+                    <span class="prompt-user">guest</span><span class="prompt-at">@</span><span class="prompt-host">wailam-ng</span><span class="prompt-symbol">:~$</span>
+                </span>
                 <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" autofocus>
             </div>
         </div>
     </div>
 
     <script>
-        // --- MATRIX RAIN BACKGROUND ---
-        const canvas = document.getElementById('matrix-bg');
+        // --- PARTICLE NETWORK BACKGROUND ---
+        const canvas = document.getElementById('network-bg');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレゲゼデベペオォコソトノホモヨョロゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = [];
-
-        for(let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
-
-        function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px monospace';
-
-            for(let i = 0; i < drops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
-            }
-        }
-        setInterval(drawMatrix, 30);
-
-        window.addEventListener('resize', () => {
+        function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        });
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particlesArray = [];
+        const colors = ['#79c0ff', '#7ee787', '#d2a8ff']; // Modern cyan, green, purple
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() * 0.8) - 0.4;
+                this.speedY = (Math.random() * 0.8) - 0.4;
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Bounce off edges
+                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
+                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray.length = 0;
+            // Adjust particle density based on screen size
+            let numParticles = (canvas.width * canvas.height) / 12000;
+            for (let i = 0; i < numParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                // Draw connection lines
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(121, 192, 255, ${1 - distance/120})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
 
         // --- TERMINAL LOGIC ---
         const outputDiv = document.getElementById('output');
         const inputContainer = document.getElementById('input-container');
         const cmdInput = document.getElementById('cmd-input');
-        const wrapper = document.getElementById('terminal-wrapper');
+        const wrapper = document.getElementById('terminal-scroll-area');
 
         const profileData = {
             whoami: `
-NAME:        Wai Lam, NG (William)
-ROLE:        Cybersecurity Specialist
-LOCATION:    Adelaide, Australia
-MISSION:     Championing "adequate security" for business resilience.
-BIO:         Experienced ICT security architect specialising in network 
+<span class="hl-purple">NAME:</span>        Wai Lam, NG (William)
+<span class="hl-purple">ROLE:</span>        Cybersecurity Specialist
+<span class="hl-purple">LOCATION:</span>    Adelaide, Australia
+<span class="hl-purple">MISSION:</span>     Championing "adequate security" for business resilience.
+<span class="hl-purple">BIO:</span>         Experienced ICT security architect specialising in network 
              security, cloud computing, and threat hunting.
 
-Type '<span class="highlight">skills</span>', '<span class="highlight">experience</span>', or '<span class="highlight">projects</span>' to dig deeper.`,
+Type '<span class="hl-cyan">skills</span>', '<span class="hl-cyan">experience</span>', or '<span class="hl-cyan">projects</span>' to dig deeper.`,
 
             skills: `
-[SYSTEM SCAN: SKILLS INVENTORY]
+<span class="hl-orange">[SYSTEM SCAN: SKILLS INVENTORY]</span>
 
-<span class="highlight">> Network Security:</span>         Firewall management, architecture review
-<span class="highlight">> Azure Cloud Computing:</span>    Managing Azure networking components
-<span class="highlight">> Threat Hunting:</span>           SIEM (Splunk, Azure KQL), PCAP analysis
-<span class="highlight">> Microsoft Security:</span>       Microsoft Defender, Incident Response, Intune
-<span class="highlight">> Risk Assessments:</span>         Trending cyber threat landscape analysis
-<span class="highlight">> 3rd Party Risk:</span>           Ensure appropriate controls & due diligence
-<span class="highlight">> Vulnerability Management:</span> VA scans, prioritising patches by severity
-<span class="highlight">> ICT Continuity:</span>           Reinforcing continuity, Business Impact Analysis`,
+<span class="hl-cyan">> Network Security:</span>         Firewall management, architecture review
+<span class="hl-cyan">> Azure Cloud Computing:</span>    Managing Azure networking components
+<span class="hl-cyan">> Threat Hunting:</span>           SIEM (Splunk, Azure KQL), PCAP analysis
+<span class="hl-cyan">> Microsoft Security:</span>       Microsoft Defender, Incident Response, Intune
+<span class="hl-cyan">> Risk Assessments:</span>         Trending cyber threat landscape analysis
+<span class="hl-cyan">> 3rd Party Risk:</span>           Ensure appropriate controls & due diligence
+<span class="hl-cyan">> Vulnerability Management:</span> VA scans, prioritising patches by severity
+<span class="hl-cyan">> ICT Continuity:</span>           Reinforcing continuity, Business Impact Analysis`,
 
             experience: `
-[WORK HISTORY LOG]
+<span class="hl-orange">[WORK HISTORY LOG]</span>
 
-<span class="highlight">[+] SA POLICE (SOUTH AUSTRALIA)</span>
+<span class="hl-green">[+] SA POLICE (SOUTH AUSTRALIA)</span>
     Role: Technical Security Specialist
     Time: Oct 2024 - Present
 
-<span class="highlight">[+] ISD CYBER (SOUTH AUSTRALIA)</span>
+<span class="hl-green">[+] ISD CYBER (SOUTH AUSTRALIA)</span>
     Role: Senior Technical Security Consultant 
     Time: Nov 2021 – Oct 2024
     --
     Role: Technical Security Consultant
     Time: Aug 2019 – Nov 2021
 
-<span class="highlight">[+] NETCRAFT (MACAU)</span>
+<span class="hl-green">[+] NETCRAFT (MACAU)</span>
     Role: Multiple roles in infrastructure engineering
     Time: Feb 2014 - Feb 2017`,
 
             education: `
-[EDUCATION & CERTIFICATIONS DECRYPTED]
+<span class="hl-orange">[EDUCATION & CERTIFICATIONS DECRYPTED]</span>
 
-<span class="highlight">DEGREES:</span>
+<span class="hl-purple">DEGREES:</span>
 * Master of Cybersecurity, University of South Australia (2019)
 * Bachelor of Commerce, University of Adelaide (2012)
 
-<span class="highlight">KEY CERTIFICATIONS:</span>
+<span class="hl-purple">KEY CERTIFICATIONS:</span>
 * Microsoft Certified: Security Operations Analyst Associate
 * Azure Fundamentals
 * Certificate of the Business Continuity Institute (CBCI)
@@ -235,63 +312,63 @@ Type '<span class="highlight">skills</span>', '<span class="highlight">experienc
 * VMware Certified Professional 5 (VCP5)`,
 
             projects: `
-[PROJECT FILES EXTRACTED]
+<span class="hl-orange">[PROJECT FILES EXTRACTED]</span>
 
-<span class="highlight">> Compliance Alignment:</span> 
+<span class="hl-cyan">> Compliance Alignment:</span> 
   Maturity assessments against Essential Eight, NIST CSF, AESCSF, ISO 27002.
   
-<span class="highlight">> Cyber Incident Response:</span> 
+<span class="hl-cyan">> Cyber Incident Response:</span> 
   Utilised SOAR and SIEM platforms for security incident reviews.
 
-<span class="highlight">> Security Hardening & SOE Baseline:</span> 
+<span class="hl-cyan">> Security Hardening & SOE Baseline:</span> 
   Implemented scalable security controls for secure operating environments.
 
-<span class="highlight">> International Projects:</span> 
+<span class="hl-cyan">> International Projects:</span> 
   Key member of cyber security programs in large oil & gas corporations 
   and government departments in Australia. 
   Extensive IT infrastructure projects across Macau and China 
   (casino hotels, aviation networks, government departments).`,
 
             contact: `
-[ESTABLISHING SECURE CONNECTION...]
+<span class="hl-orange">[ESTABLISHING SECURE CONNECTION...]</span>
 
-Phone: <span class="highlight">0426 097 288</span>
-Email: <span class="highlight">wailam.ng.william@gmail.com</span>
+Phone: <span class="hl-green">0426 097 288</span>
+Email: <span class="hl-green">wailam.ng.william@gmail.com</span>
 
 Ready to strengthen your security posture. Awaiting your transmission.`
         };
 
         const bootSequence = [
-            "INITIALISING SECURE KERNEL...",
-            "LOADING MODULES: [NETWORK, AZURE, SIEM, FIREWALL]... OK",
-            "ESTABLISHING UPLINK TO WAI LAM NG SECURE DB... CONNECTED",
-            "DECRYPTING PROFILE DATA...",
-            " ",
-            "SYSTEM READY.",
-            `Type '<span class="highlight">help</span>' for a list of available commands.`
+            `INITIALISING KERNEL... <span class="hl-green">[OK]</span>`,
+            `LOADING MODULES: [NETWORK, AZURE, SIEM, FIREWALL]... <span class="hl-green">[OK]</span>`,
+            `ESTABLISHING UPLINK TO WAI LAM NG SECURE DB... <span class="hl-green">[CONNECTED]</span>`,
+            `DECRYPTING PROFILE DATA...`,
+            ` `,
+            `SYSTEM READY.`,
+            `Type '<span class="hl-cyan">help</span>' for a list of available commands.`
         ];
 
         const asciiArt = `
- __      __      .__ .____                     _______    ________   
-/  \\    /  \\____ |__||    |   _____    _____   \\      \\  /  _____/   
-\\   \\/\\/   /\\__  \\|  ||    |   \\__  \\  /     \\  /   |   \\/   \\  ___  
- \\        /  / __ \\  ||    |___ / __ \\|  Y Y  \\/    |    \\    \\_\\  \\ 
-  \\__/\\  /  (____  /__||_______(____  /__|_|  /\\____|__  /\\______  / 
-       \\/        \\/                 \\/      \\/         \\/        \\/  
-                                         CYBERSECURITY SPECIALIST
+██╗    ██╗ █████╗ ██╗    ██╗      █████╗ ███╗   ███╗
+██║    ██║██╔══██╗██║    ██║     ██╔══██╗████╗ ████║
+██║ █╗ ██║███████║██║    ██║     ███████║██╔████╔██║
+██║███╗██║██╔══██║██║    ██║     ██╔══██║██║╚██╔╝██║
+╚███╔███╔╝██║  ██║██║    ███████╗██║  ██║██║ ╚═╝ ██║
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
+              <span class="hl-cyan">CYBERSECURITY SPECIALIST</span>
         `;
 
         // Boot sequence logic
         let bootIndex = 0;
         function printBootSequence() {
             if (bootIndex === 0) {
-                printLine(`<div class="ascii-art highlight">${asciiArt}</div>`);
+                printLine(`<div class="ascii-art">${asciiArt}</div>`);
             }
 
             if (bootIndex < bootSequence.length) {
                 printLine(bootSequence[bootIndex]);
                 bootIndex++;
-                setTimeout(printBootSequence, 300); // 300ms delay between lines
+                setTimeout(printBootSequence, 200); // 200ms delay for faster boot
             } else {
                 inputContainer.style.display = 'flex';
                 cmdInput.focus();
@@ -303,7 +380,14 @@ Ready to strengthen your security posture. Awaiting your transmission.`
         function printLine(text, isCmd = false) {
             const line = document.createElement('div');
             line.className = 'output-line' + (isCmd ? ' cmd-echo' : '');
-            line.innerHTML = text;
+            
+            // Format the echo command with the prompt
+            if (isCmd) {
+                line.innerHTML = `<span class="prompt-user">guest</span><span class="prompt-at">@</span><span class="prompt-host">wailam-ng</span><span class="prompt-symbol">:~$</span> ${text}`;
+            } else {
+                line.innerHTML = text;
+            }
+            
             outputDiv.appendChild(line);
             scrollToBottom();
         }
@@ -315,7 +399,7 @@ Ready to strengthen your security posture. Awaiting your transmission.`
         // Handle commands
         function processCommand(cmd) {
             const cleanCmd = cmd.trim().toLowerCase();
-            printLine(`guest@wailam-ng:~$ ${cmd}`, true);
+            printLine(cmd, true);
 
             if (cleanCmd === '') return;
 
@@ -323,14 +407,14 @@ Ready to strengthen your security posture. Awaiting your transmission.`
                 case 'help':
                     printLine(`
 AVAILABLE COMMANDS:
-  <span class="highlight">whoami</span>     - Display executive summary
-  <span class="highlight">skills</span>     - View technical capabilities
-  <span class="highlight">experience</span> - Show employment history
-  <span class="highlight">education</span>  - List degrees and certifications
-  <span class="highlight">projects</span>   - Display key project highlights
-  <span class="highlight">contact</span>    - Get contact details
-  <span class="highlight">clear</span>      - Clear terminal screen
-  <span class="highlight">sudo</span>       - ???`);
+  <span class="hl-cyan">whoami</span>     - Display executive summary
+  <span class="hl-cyan">skills</span>     - View technical capabilities
+  <span class="hl-cyan">experience</span> - Show employment history
+  <span class="hl-cyan">education</span>  - List degrees and certifications
+  <span class="hl-cyan">projects</span>   - Display key project highlights
+  <span class="hl-cyan">contact</span>    - Get contact details
+  <span class="hl-cyan">clear</span>      - Clear terminal screen
+  <span class="hl-cyan">sudo</span>       - ???`);
                     break;
                 case 'whoami':
                     printLine(profileData.whoami);
@@ -354,10 +438,10 @@ AVAILABLE COMMANDS:
                     outputDiv.innerHTML = '';
                     break;
                 case 'sudo':
-                    printLine("Nice try. This incident will be reported.");
+                    printLine(`<span class="hl-orange">Nice try. This incident will be reported.</span>`);
                     break;
                 default:
-                    printLine(`Command not found: ${cleanCmd}. Type 'help' for available commands.`);
+                    printLine(`Command not found: ${cleanCmd}. Type '<span class="hl-cyan">help</span>' for available commands.`);
             }
         }
 
@@ -370,14 +454,14 @@ AVAILABLE COMMANDS:
             }
         });
 
-        // Always focus input when clicking anywhere on the terminal
-        wrapper.addEventListener('click', () => {
+        // Always focus input when clicking anywhere on the terminal wrapper
+        document.getElementById('terminal-wrapper').addEventListener('click', () => {
             cmdInput.focus();
         });
 
         // Start boot sequence
         window.onload = () => {
-            setTimeout(printBootSequence, 500);
+            setTimeout(printBootSequence, 300);
         };
     </script>
 </body>
