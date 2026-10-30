@@ -1,468 +1,237 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU" class="no-js" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wai Lam NG | Cybersecurity Specialist</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
-        
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #0d1117; /* Deep modern dark slate */
-            color: #c9d1d9; /* Soft grey text */
-            font-family: 'Fira Code', 'Courier New', Courier, monospace;
-            overflow: hidden;
-        }
-
-        /* Particle Network Background */
-        canvas {
-            display: block;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            opacity: 0.6;
-        }
-
-        /* Terminal Overlay with Modern Glassmorphism */
-        #terminal-wrapper {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 1000px;
-            height: 85vh;
-            z-index: 1;
-            background: rgba(13, 17, 23, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.05) inset;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        /* macOS style window header */
-        #terminal-header {
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mac-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-        .close-btn { background: #ff5f56; box-shadow: 0 0 5px #ff5f5680; }
-        .min-btn { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e80; }
-        .max-btn { background: #27c93f; box-shadow: 0 0 5px #27c93f80; }
-
-        .window-title {
-            flex-grow: 1;
-            text-align: center;
-            color: #8b949e;
-            font-size: 13px;
-            user-select: none;
-            margin-right: 56px; /* Balance the buttons for true center */
-        }
-
-        #terminal-scroll-area {
-            padding: 24px;
-            overflow-y: auto;
-            flex-grow: 1;
-            scrollbar-width: thin;
-            scrollbar-color: #30363d transparent;
-        }
-        
-        #terminal-scroll-area::-webkit-scrollbar { width: 8px; }
-        #terminal-scroll-area::-webkit-scrollbar-thumb { background-color: #30363d; border-radius: 4px; }
-
-        .output-line {
-            margin: 6px 0;
-            line-height: 1.6;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-        }
-
-        .cmd-echo {
-            color: #fff;
-            margin-top: 20px;
-            opacity: 0.8;
-        }
-
-        /* Modern syntax highlighting classes */
-        .hl-cyan { color: #79c0ff; font-weight: 500; }
-        .hl-green { color: #7ee787; font-weight: 500; }
-        .hl-purple { color: #d2a8ff; font-weight: 500; }
-        .hl-orange { color: #ffa657; font-weight: 500; }
-
-        #input-container {
-            display: flex;
-            align-items: center;
-            margin-top: 15px;
-            padding-bottom: 20px;
-        }
-
-        #prompt {
-            margin-right: 12px;
-            white-space: nowrap;
-            font-weight: 500;
-        }
-        
-        .prompt-user { color: #ff7b72; }
-        .prompt-at { color: #c9d1d9; }
-        .prompt-host { color: #d2a8ff; }
-        .prompt-symbol { color: #7ee787; }
-
-        #cmd-input {
-            background: transparent;
-            border: none;
-            color: #c9d1d9;
-            font-family: 'Fira Code', monospace;
-            font-size: 15px;
-            flex-grow: 1;
-            outline: none;
-        }
-
-        .ascii-art {
-            white-space: pre;
-            font-size: 10px;
-            line-height: 12px;
-            margin-bottom: 24px;
-            color: #58a6ff;
-            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
-            overflow: hidden;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        
-        .ascii-art::-webkit-scrollbar {
-            display: none;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; form-action 'none'; base-uri 'none'; object-src 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Wai Lam (William) Ng | Security Architect | AI Security | Adelaide</title>
+<meta name="description" content="Adelaide-based security professional focused on security architecture, AI security and cyber compliance: OWASP GenAI/LLM, Azure, ISM, Essential Eight (ASD Essentials), NIST CSF, ISO 27002 and SACSF.">
+<link rel="canonical" href="https://whoami813.github.io/bio/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230d1117'/%3E%3Ctext x='50%25' y='56%25' text-anchor='middle' dominant-baseline='middle' font-family='monospace' font-size='28' font-weight='700' fill='%2358a6ff'%3EWN%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Wai Lam (William) Ng">
+<meta property="og:title" content="Wai Lam (William) Ng | Security Architect | AI Security">
+<meta property="og:description" content="Practical, compliant security for cloud and AI systems. Adelaide, Australia.">
+<meta property="og:url" content="https://whoami813.github.io/bio/">
+<meta property="og:image" content="https://whoami813.github.io/bio/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Wai Lam (William) Ng, Security Architect and AI Security, Adelaide">
+<meta property="og:locale" content="en_AU">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wai Lam (William) Ng | Security Architect | AI Security">
+<meta name="twitter:description" content="Practical, compliant security for cloud and AI systems. Adelaide, Australia.">
+<meta name="twitter:image" content="https://whoami813.github.io/bio/og-image.png">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Wai Lam Ng",
+  "alternateName": "William Ng",
+  "jobTitle": "Technical Security Specialist",
+  "worksFor": {"@type": "Organization", "name": "South Australia Police"},
+  "description": "Adelaide-based security professional focused on security architecture, AI security and cyber compliance.",
+  "url": "https://whoami813.github.io/bio/",
+  "sameAs": ["https://www.linkedin.com/in/wai-lam-ng-5b3852a4/", "https://github.com/whoami813"],
+  "address": {"@type": "PostalAddress", "addressLocality": "Adelaide", "addressRegion": "SA", "addressCountry": "AU"},
+  "alumniOf": [
+    {"@type": "CollegeOrUniversity", "name": "University of South Australia"},
+    {"@type": "CollegeOrUniversity", "name": "University of Adelaide"}
+  ],
+  "knowsAbout": ["Security architecture", "AI security", "OWASP Top 10 for LLM Applications", "Microsoft Azure", "Australian Government ISM", "Essential Eight (ASD Essentials)", "NIST Cybersecurity Framework", "ISO/IEC 27002", "SACSF"]
+}
+</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
+<canvas id="bg" aria-hidden="true"></canvas>
 
-    <canvas id="network-bg"></canvas>
-
-    <div id="terminal-wrapper">
-        <div id="terminal-header">
-            <div class="mac-btn close-btn"></div>
-            <div class="mac-btn min-btn"></div>
-            <div class="mac-btn max-btn"></div>
-            <div class="window-title">william@ng-cyber-sec: ~</div>
-        </div>
-        <div id="terminal-scroll-area">
-            <div id="output"></div>
-            <div id="input-container" style="display: none;">
-                <span id="prompt">
-                    <span class="prompt-user">guest</span><span class="prompt-at">@</span><span class="prompt-host">wailam-ng</span><span class="prompt-symbol">:~$</span>
-                </span>
-                <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" autofocus>
-            </div>
-        </div>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="#top"><span aria-hidden="true">~/</span>wailam-ng</a>
+    <nav aria-label="Primary">
+      <ul class="nav-list">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions js-only">
+      <button id="motion-toggle" class="icon-btn" type="button" aria-pressed="true">Animation</button>
+      <button id="theme-toggle" class="icon-btn" type="button">Light mode</button>
     </div>
+  </div>
+</header>
 
-    <script>
-        // --- PARTICLE NETWORK BACKGROUND ---
-        const canvas = document.getElementById('network-bg');
-        const ctx = canvas.getContext('2d');
+<main id="main">
+  <section class="hero container" id="top" aria-labelledby="hero-title">
+    <div>
+      <p class="eyebrow mono"><span aria-hidden="true">$ </span>whoami</p>
+      <h1 id="hero-title">Wai Lam (William) Ng</h1>
+      <p class="headline">Security Architect | AI Security | Adelaide</p>
+      <p class="lede">I design practical security for cloud platforms and AI systems, aligned to the ISM, Essential Eight (ASD Essentials), NIST CSF, ISO 27002 and SACSF, and to AI guidance such as the OWASP Top 10 for LLM Applications.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="https://www.linkedin.com/in/wai-lam-ng-5b3852a4/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+        <a class="btn" href="mailto:wailam.ng.william+bio@gmail.com">Email</a>
+      </div>
+      <ul class="facts">
+        <li>Technical Security Specialist, SA Police</li>
+        <li>Master of Cybersecurity, UniSA</li>
+        <li>SC-200 · CBCI</li>
+      </ul>
+    </div>
+    <svg class="monogram" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+      <rect class="m-bg" x="4" y="4" width="192" height="192" rx="28"/>
+      <text class="m-ini" x="100" y="112" text-anchor="middle">WN</text>
+      <text class="m-sub" x="100" y="158" text-anchor="middle">secure_by_design</text>
+    </svg>
+  </section>
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+  <section id="about" class="container" aria-labelledby="about-title">
+    <h2 id="about-title">About</h2>
+    <div class="about-grid">
+      <div>
+        <p>I’m an Adelaide-based security professional with experience across policing, government departments and large oil &amp; gas organisations, plus earlier IT infrastructure projects across Macau and China (casino hotels, aviation networks and government departments). I champion “adequate security” for business resilience: controls that fit the business, aligned to recognised frameworks.</p>
+        <p>My current focus is AI security: applying the OWASP GenAI/LLM guidance and the CSA AI security maturity model, and mapping AI risks back to the ISM and Essential Eight (ASD Essentials) obligations organisations already have.</p>
+      </div>
+      <aside class="card" aria-label="Open to">
+        <h3>Open to</h3>
+        <p>Security Architect and AI Security roles. Based in Adelaide, South Australia.</p>
+        <a class="btn small" href="#contact">Get in touch</a>
+      </aside>
+    </div>
+  </section>
 
-        const particlesArray = [];
-        const colors = ['#79c0ff', '#7ee787', '#d2a8ff']; // Modern cyan, green, purple
+  <section id="experience" class="container" aria-labelledby="exp-title">
+    <h2 id="exp-title">Experience</h2>
+    <ol class="timeline">
+      <li>
+        <article>
+          <div class="job-head"><h3>SA Police</h3><span class="dates">Oct 2024 – Present</span></div>
+          <p class="role">Technical Security Specialist</p>
+          <ul>
+            <li>Review the security architecture of new ICT systems against the ISM and SACSF.</li>
+            <li>Lead AI security uplift work guided by OWASP GenAI and CSA AI security maturity guidance.</li>
+            <li>Help design secure public-facing online services on Microsoft Azure.</li>
+            <li>Conduct security risk assessments and recommend treatment plans.</li>
+          </ul>
+        </article>
+      </li>
+      <li>
+        <article>
+          <div class="job-head"><h3>ISD Cyber</h3><span class="dates">Aug 2019 – Oct 2024</span></div>
+          <p class="role">Senior Technical Security Consultant <span class="dates">(Nov 2021 – Oct 2024)</span><br>Technical Security Consultant <span class="dates">(Aug 2019 – Nov 2021)</span></p>
+          <ul>
+            <li>Key member of cyber security programs for multiple government and oil &amp; gas organisations in Australia.</li>
+            <li>Maturity assessments against the Essential Eight (ASD Essentials), NIST CSF, AESCSF and ISO 27002, with prioritised recommendations.</li>
+            <li>Security incident reviews using SIEM and SOAR platforms.</li>
+            <li>Implemented scalable security controls for secure operating environment (SOE) baselines across multiple environments.</li>
+          </ul>
+        </article>
+      </li>
+      <li class="study">
+        <article>
+          <div class="job-head"><h3>University of South Australia</h3><span class="dates">2019</span></div>
+          <p class="role">Master of Cybersecurity</p>
+        </article>
+      </li>
+      <li>
+        <article>
+          <div class="job-head"><h3>Netcraft (Macau)</h3><span class="dates">Feb 2014 – Feb 2017</span></div>
+          <p class="role">Infrastructure engineering (multiple roles)</p>
+          <ul>
+            <li>IT infrastructure projects across Macau and China for casino hotels, aviation networks and government departments.</li>
+          </ul>
+        </article>
+      </li>
+    </ol>
+  </section>
 
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2 + 0.5;
-                this.speedX = (Math.random() * 0.8) - 0.4;
-                this.speedY = (Math.random() * 0.8) - 0.4;
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
+  <section id="projects" class="container" aria-labelledby="proj-title">
+    <h2 id="proj-title">Selected projects</h2>
+    <div class="grid">
+      <article class="card case">
+        <span class="tag">Compliance</span>
+        <h3>Multi-framework maturity assessment</h3>
+        <dl>
+          <dt>Challenge</dt><dd>Organisations needing a clear view of their security posture across several overlapping frameworks.</dd>
+          <dt>Approach</dt><dd>Maturity assessments against the Essential Eight (ASD Essentials), NIST CSF, AESCSF and ISO 27002, consolidating findings into one view.</dd>
+          <dt>Outcome</dt><dd>A prioritised, framework-aligned uplift roadmap.</dd>
+        </dl>
+      </article>
+      <article class="card case">
+        <span class="tag">Architecture</span>
+        <h3>Security hardening &amp; SOE baseline</h3>
+        <dl>
+          <dt>Challenge</dt><dd>Applying consistent security controls across a growing operating environment.</dd>
+          <dt>Approach</dt><dd>Implemented scalable security controls for a secure operating environment (SOE) baseline.</dd>
+          <dt>Outcome</dt><dd>A repeatable, hardened baseline that is easier to maintain and assess.</dd>
+        </dl>
+      </article>
+      <article class="card case">
+        <span class="tag">AI security</span>
+        <h3>LLM application risk review</h3>
+        <dl>
+          <dt>Challenge</dt><dd>LLM-based applications introduce risks that traditional security reviews can miss.</dd>
+          <dt>Approach</dt><dd>Threat-modelling LLM-based applications against the OWASP Top 10 for LLM Applications and mapping controls to the ISM.</dd>
+          <dt>Outcome</dt><dd>Clear, framework-mapped risk treatment guidance for AI adoption.</dd>
+        </dl>
+      </article>
+    </div>
+  </section>
 
-                // Bounce off edges
-                if (this.x < 0 || this.x > canvas.width) this.speedX = -this.speedX;
-                if (this.y < 0 || this.y > canvas.height) this.speedY = -this.speedY;
-            }
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
+  <section id="skills" class="container" aria-labelledby="skills-title">
+    <h2 id="skills-title">Skills</h2>
+    <div class="grid skills-grid">
+      <div class="card"><h3>AI security</h3><ul class="skill-list"><li>OWASP GenAI / Top 10 for LLM Apps</li><li>CSA AI security maturity model</li></ul></div>
+      <div class="card"><h3>Architecture &amp; cloud</h3><ul class="skill-list"><li>Network security</li><li>Firewall management</li><li>Architecture review</li><li>Azure networking</li><li>Secure SOE baselines</li></ul></div>
+      <div class="card"><h3>Governance, risk &amp; compliance</h3><ul class="skill-list"><li>ISM</li><li>Essential Eight (ASD Essentials)</li><li>NIST CSF</li><li>ISO 27002</li><li>SACSF</li><li>AESCSF</li><li>Third-party risk</li><li>Risk assessments</li><li>ICT continuity &amp; BIA</li></ul></div>
+      <div class="card"><h3>Security operations</h3><ul class="skill-list"><li>Threat hunting</li><li>Splunk</li><li>Azure KQL</li><li>PCAP analysis</li><li>Microsoft Defender</li><li>Intune</li><li>Incident response</li><li>Vulnerability management</li></ul></div>
+    </div>
+  </section>
 
-        function initParticles() {
-            particlesArray.length = 0;
-            // Adjust particle density based on screen size
-            let numParticles = (canvas.width * canvas.height) / 12000;
-            for (let i = 0; i < numParticles; i++) {
-                particlesArray.push(new Particle());
-            }
-        }
-        initParticles();
+  <section id="certifications" class="container" aria-labelledby="cert-title">
+    <h2 id="cert-title">Certifications &amp; education</h2>
+    <ul class="cert-list">
+      <li class="featured"><span class="cert-badge">SC-200</span><span>Microsoft Certified: Security Operations Analyst Associate</span></li>
+      <li class="featured"><span class="cert-badge">CBCI</span><span>Certificate of the Business Continuity Institute</span></li>
+      <li><span class="cert-badge">CCNA</span><span>CCNA Routing and Switching</span></li>
+      <li><span class="cert-badge">H3C</span><span>H3C Certified Senior Engineer for Routing &amp; Switching</span></li>
+      <li><span class="cert-badge">AZ-900</span><span>Microsoft Azure Fundamentals</span></li>
+      <li><span class="cert-badge">VCP5</span><span>VMware Certified Professional 5</span></li>
+    </ul>
+    <h3>Education</h3>
+    <ul>
+      <li>Master of Cybersecurity, University of South Australia · 2019</li>
+      <li>Bachelor of Commerce, University of Adelaide · 2012</li>
+    </ul>
+  </section>
 
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particlesArray.length; i++) {
-                particlesArray[i].update();
-                particlesArray[i].draw();
-                
-                // Draw connection lines
-                for (let j = i; j < particlesArray.length; j++) {
-                    const dx = particlesArray[i].x - particlesArray[j].x;
-                    const dy = particlesArray[i].y - particlesArray[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 120) {
-                        ctx.beginPath();
-                        ctx.strokeStyle = `rgba(121, 192, 255, ${1 - distance/120})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
+  <section id="contact" class="container" aria-labelledby="contact-title">
+    <h2 id="contact-title">Contact</h2>
+    <div class="contact-block card">
+      <p>Open to Security Architect and AI Security roles, speaking and collaboration. Email or LinkedIn is the best way to reach me.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="mailto:wailam.ng.william+bio@gmail.com">Email me</a>
+        <a class="btn" href="https://www.linkedin.com/in/wai-lam-ng-5b3852a4/" target="_blank" rel="noopener noreferrer">Connect on LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      </div>
+      <p class="contact-addr mono">wailam.ng.william+bio@gmail.com</p>
+    </div>
+  </section>
+</main>
 
-        // --- TERMINAL LOGIC ---
-        const outputDiv = document.getElementById('output');
-        const inputContainer = document.getElementById('input-container');
-        const cmdInput = document.getElementById('cmd-input');
-        const wrapper = document.getElementById('terminal-scroll-area');
-
-        const profileData = {
-            whoami: `
-<span class="hl-purple">NAME:</span>        Wai Lam, NG (William)
-<span class="hl-purple">ROLE:</span>        Cybersecurity Specialist
-<span class="hl-purple">LOCATION:</span>    Adelaide, Australia
-<span class="hl-purple">MISSION:</span>     Championing "adequate security" for business resilience.
-<span class="hl-purple">BIO:</span>         Experienced ICT security architect specialising in network 
-             security, cloud computing, and threat hunting.
-
-Type '<span class="hl-cyan">skills</span>', '<span class="hl-cyan">experience</span>', or '<span class="hl-cyan">projects</span>' to dig deeper.`,
-
-            skills: `
-<span class="hl-orange">[SYSTEM SCAN: SKILLS INVENTORY]</span>
-
-<span class="hl-cyan">> Network Security:</span>         Firewall management, architecture review
-<span class="hl-cyan">> Azure Cloud Computing:</span>    Managing Azure networking components
-<span class="hl-cyan">> Threat Hunting:</span>           SIEM (Splunk, Azure KQL), PCAP analysis
-<span class="hl-cyan">> Microsoft Security:</span>       Microsoft Defender, Incident Response, Intune
-<span class="hl-cyan">> Risk Assessments:</span>         Trending cyber threat landscape analysis
-<span class="hl-cyan">> 3rd Party Risk:</span>           Ensure appropriate controls & due diligence
-<span class="hl-cyan">> Vulnerability Management:</span> VA scans, prioritising patches by severity
-<span class="hl-cyan">> ICT Continuity:</span>           Reinforcing continuity, Business Impact Analysis`,
-
-            experience: `
-<span class="hl-orange">[WORK HISTORY LOG]</span>
-
-<span class="hl-green">[+] SA POLICE (SOUTH AUSTRALIA)</span>
-    Role: Technical Security Specialist
-    Time: Oct 2024 - Present
-
-<span class="hl-green">[+] ISD CYBER (SOUTH AUSTRALIA)</span>
-    Role: Senior Technical Security Consultant 
-    Time: Nov 2021 – Oct 2024
-    --
-    Role: Technical Security Consultant
-    Time: Aug 2019 – Nov 2021
-
-<span class="hl-green">[+] NETCRAFT (MACAU)</span>
-    Role: Multiple roles in infrastructure engineering
-    Time: Feb 2014 - Feb 2017`,
-
-            education: `
-<span class="hl-orange">[EDUCATION & CERTIFICATIONS DECRYPTED]</span>
-
-<span class="hl-purple">DEGREES:</span>
-* Master of Cybersecurity, University of South Australia (2019)
-* Bachelor of Commerce, University of Adelaide (2012)
-
-<span class="hl-purple">KEY CERTIFICATIONS:</span>
-* Microsoft Certified: Security Operations Analyst Associate
-* Azure Fundamentals
-* Certificate of the Business Continuity Institute (CBCI)
-* H3C Certified Senior Engineer for Routing & Switching (relevant to CCNP)
-* CCNA Routing and Switching
-* VMware Certified Professional 5 (VCP5)`,
-
-            projects: `
-<span class="hl-orange">[PROJECT FILES EXTRACTED]</span>
-
-<span class="hl-cyan">> Compliance Alignment:</span> 
-  Maturity assessments against Essential Eight, NIST CSF, AESCSF, ISO 27002.
-  
-<span class="hl-cyan">> Cyber Incident Response:</span> 
-  Utilised SOAR and SIEM platforms for security incident reviews.
-
-<span class="hl-cyan">> Security Hardening & SOE Baseline:</span> 
-  Implemented scalable security controls for secure operating environments.
-
-<span class="hl-cyan">> International Projects:</span> 
-  Key member of cyber security programs in large oil & gas corporations 
-  and government departments in Australia. 
-  Extensive IT infrastructure projects across Macau and China 
-  (casino hotels, aviation networks, government departments).`,
-
-            contact: `
-<span class="hl-orange">[ESTABLISHING SECURE CONNECTION...]</span>
-
-Phone: <span class="hl-green">0426 097 288</span>
-Email: <span class="hl-green">wailam.ng.william@gmail.com</span>
-
-Ready to strengthen your security posture. Awaiting your transmission.`
-        };
-
-        const bootSequence = [
-            `INITIALISING KERNEL... <span class="hl-green">[OK]</span>`,
-            `LOADING MODULES: [NETWORK, AZURE, SIEM, FIREWALL]... <span class="hl-green">[OK]</span>`,
-            `ESTABLISHING UPLINK TO WAI LAM NG SECURE DB... <span class="hl-green">[CONNECTED]</span>`,
-            `DECRYPTING PROFILE DATA...`,
-            ` `,
-            `SYSTEM READY.`,
-            `Type '<span class="hl-cyan">help</span>' for a list of available commands.`
-        ];
-
-        const asciiArt = `
-██╗    ██╗ █████╗ ██╗    ██╗      █████╗ ███╗   ███╗
-██║    ██║██╔══██╗██║    ██║     ██╔══██╗████╗ ████║
-██║ █╗ ██║███████║██║    ██║     ███████║██╔████╔██║
-██║███╗██║██╔══██║██║    ██║     ██╔══██║██║╚██╔╝██║
-╚███╔███╔╝██║  ██║██║    ███████╗██║  ██║██║ ╚═╝ ██║
- ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝    ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝
-              <span class="hl-cyan">CYBERSECURITY SPECIALIST</span>
-        `;
-
-        // Boot sequence logic
-        let bootIndex = 0;
-        function printBootSequence() {
-            if (bootIndex === 0) {
-                printLine(`<div class="ascii-art">${asciiArt}</div>`);
-            }
-
-            if (bootIndex < bootSequence.length) {
-                printLine(bootSequence[bootIndex]);
-                bootIndex++;
-                setTimeout(printBootSequence, 200); // 200ms delay for faster boot
-            } else {
-                inputContainer.style.display = 'flex';
-                cmdInput.focus();
-                scrollToBottom();
-            }
-        }
-
-        // Print line to terminal
-        function printLine(text, isCmd = false) {
-            const line = document.createElement('div');
-            line.className = 'output-line' + (isCmd ? ' cmd-echo' : '');
-            
-            // Format the echo command with the prompt
-            if (isCmd) {
-                line.innerHTML = `<span class="prompt-user">guest</span><span class="prompt-at">@</span><span class="prompt-host">wailam-ng</span><span class="prompt-symbol">:~$</span> ${text}`;
-            } else {
-                line.innerHTML = text;
-            }
-            
-            outputDiv.appendChild(line);
-            scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            wrapper.scrollTop = wrapper.scrollHeight;
-        }
-
-        // Handle commands
-        function processCommand(cmd) {
-            const cleanCmd = cmd.trim().toLowerCase();
-            printLine(cmd, true);
-
-            if (cleanCmd === '') return;
-
-            switch(cleanCmd) {
-                case 'help':
-                    printLine(`
-AVAILABLE COMMANDS:
-  <span class="hl-cyan">whoami</span>     - Display executive summary
-  <span class="hl-cyan">skills</span>     - View technical capabilities
-  <span class="hl-cyan">experience</span> - Show employment history
-  <span class="hl-cyan">education</span>  - List degrees and certifications
-  <span class="hl-cyan">projects</span>   - Display key project highlights
-  <span class="hl-cyan">contact</span>    - Get contact details
-  <span class="hl-cyan">clear</span>      - Clear terminal screen
-  <span class="hl-cyan">sudo</span>       - ???`);
-                    break;
-                case 'whoami':
-                    printLine(profileData.whoami);
-                    break;
-                case 'skills':
-                    printLine(profileData.skills);
-                    break;
-                case 'experience':
-                    printLine(profileData.experience);
-                    break;
-                case 'education':
-                    printLine(profileData.education);
-                    break;
-                case 'projects':
-                    printLine(profileData.projects);
-                    break;
-                case 'contact':
-                    printLine(profileData.contact);
-                    break;
-                case 'clear':
-                    outputDiv.innerHTML = '';
-                    break;
-                case 'sudo':
-                    printLine(`<span class="hl-orange">Nice try. This incident will be reported.</span>`);
-                    break;
-                default:
-                    printLine(`Command not found: ${cleanCmd}. Type '<span class="hl-cyan">help</span>' for available commands.`);
-            }
-        }
-
-        // Event listener for input
-        cmdInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                const cmd = this.value;
-                this.value = '';
-                processCommand(cmd);
-            }
-        });
-
-        // Always focus input when clicking anywhere on the terminal wrapper
-        document.getElementById('terminal-wrapper').addEventListener('click', () => {
-            cmdInput.focus();
-        });
-
-        // Start boot sequence
-        window.onload = () => {
-            setTimeout(printBootSequence, 300);
-        };
-    </script>
+<footer class="site-footer">
+  <div class="container">
+    <p>© <span id="year">2026</span> Wai Lam (William) Ng · Static site on GitHub Pages · No tracking or cookies (theme preference is stored only in your browser).</p>
+    <p><a href="variant-minimal.html">Compare: minimal recruiter version</a></p>
+  </div>
+</footer>
+<script src="script.js"></script>
 </body>
 </html>
