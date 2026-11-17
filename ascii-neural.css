@@ -1,0 +1,94 @@
+/* ASCII neural-net background demo — not published.
+   Keeps the effect behind content, dim and non-interactive. */
+
+html {
+  background: var(--bg);
+}
+
+body.ascii-nn-page {
+  background: transparent;
+}
+
+#ascii-nn {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.42;
+}
+
+[data-theme="light"] #ascii-nn {
+  opacity: 0.28;
+}
+
+.ascii-nn-page .skip-link,
+.ascii-nn-page .demo-banner,
+.ascii-nn-page .site-header,
+.ascii-nn-page main,
+.ascii-nn-page .site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.ascii-nn-page .site-header {
+  z-index: 10;
+}
+
+.demo-banner {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  border-bottom: 1px solid var(--border);
+  padding: 0.45rem 1.25rem;
+  text-align: center;
+}
+
+.demo-banner a {
+  color: var(--accent);
+}
+
+/* Soft scrims behind text only, so the grid stays visible in the
+   margins and in gaps between blocks. */
+.ascii-nn-page main > section.container:not(.hero) {
+  background: color-mix(in srgb, var(--bg) 74%, transparent);
+  box-shadow: 0 0 40px 20px color-mix(in srgb, var(--bg) 62%, transparent);
+  border-radius: var(--radius);
+}
+
+.ascii-nn-page .hero.container {
+  background: transparent;
+  box-shadow: none;
+}
+
+.ascii-nn-page .hero.container > div:first-child {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--bg) 90%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 82%, transparent) 80%,
+    transparent 100%);
+  border-radius: var(--radius);
+  margin: -0.5rem 0 -0.5rem -1rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
+}
+
+.ascii-nn-page .site-footer {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
+@media (max-width: 760px) {
+  .ascii-nn-page .hero.container > div:first-child {
+    margin-left: -0.5rem;
+    padding-left: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ascii-nn {
+    opacity: 0.36;
+  }
+  [data-theme="light"] #ascii-nn {
+    opacity: 0.22;
+  }
+}
